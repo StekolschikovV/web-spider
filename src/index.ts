@@ -41,6 +41,18 @@ const port = process.env.PORT || 3000;
 
 
 
+app.get('/seo', async (req: Request, res: Response) => {
+    const { url } = urlParser.parse(req.url, true).query
+    if (url) {
+        const seo = await getSEO(url)
+        res.status(200).json(seo)
+    } else {
+        res.status(200).json({
+            status: 0
+        })
+    }
+})
+
 app.get('/page', async (req: Request, res: Response) => {
     const { url } = urlParser.parse(req.url, true).query
     if (url) {

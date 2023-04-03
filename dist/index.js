@@ -13,6 +13,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
+const SEO_1 = require("./SEO");
 const explorer_1 = __importDefault(require("./explorer"));
 const urlParser = require('url');
 const queue = require('express-queue');
@@ -43,6 +44,18 @@ const port = process.env.PORT || 3000;
 //         process.exit(1);
 //     }
 // });
+app.get('/seo', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { url } = urlParser.parse(req.url, true).query;
+    if (url) {
+        const seo = yield (0, SEO_1.getSEO)(url);
+        res.status(200).json(seo);
+    }
+    else {
+        res.status(200).json({
+            status: 0
+        });
+    }
+}));
 app.get('/page', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { url } = urlParser.parse(req.url, true).query;
     if (url) {
