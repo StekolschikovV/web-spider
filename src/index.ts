@@ -1,6 +1,11 @@
 import express, { Express, Request, Response } from 'express';
+import { execSync } from 'child_process';
+import { url } from 'inspector';
+import path from 'path';
+import * as fs from "fs";
 import { getSEO } from "./SEO";
 import tor from './tor';
+import { urlToFileName, fixUtl, addLoader, errorHtml, getTopPreviewer } from './previewer';
 
 const urlParser = require('url')
 const app: Express = express();
@@ -23,12 +28,66 @@ app.get('/healthcheck', async (req: Request, res: Response) => {
             status: 1
         })
     } else {
+        process.exit(1);
         console.log("healthcheck", 0)
         res.status(500).json({
             status: 0
         })
     }
 });
+
+app.get('/previewer', async (req: Request, res: Response) => {
+
+    const { url } = urlParser.parse(req.url, true).query
+
+    if (url && typeof url === "string") {
+
+        const pageFileName = urlToFileName(url)
+        const pageHtmlFilePath = path.join(__dirname, 'cache', `${pageFileName}.html`);
+        const pageMhtmlFilePath = path.join(__dirname, 'cache', `${pageFileName}.mhtml`);
+
+        if (!fs.existsSync(path.join(__dirname, 'cache'))) {
+            fs.mkdirSync(path.join(__dirname, 'cache'))
+        }
+        if (fs.existsSync(pageHtmlFilePath)) {
+            const html = await fs.readFileSync(pageHtmlFilePath, 'utf8');
+            res.send(fixUtl(addLoader(html)));
+        } else {
+
+            const pageMhtml: any = await getTopPreviewer(url)
+
+            if (pageMhtml) {
+
+                await fs.writeFileSync(pageMhtmlFilePath, pageMhtml);
+
+                let mhtml2htmlError = false
+
+                try {
+                    let result = execSync(
+                        `npx mhtml2html ${pageFileName}.mhtml ${pageFileName}.html`,
+                        { cwd: path.join('./dist/', 'cache') }
+                    )
+                    fs.unlink(pageMhtmlFilePath, () => {
+                    })
+                } catch (e) {
+                    mhtml2htmlError = true
+                }
+                if (mhtml2htmlError) {
+                    res.status(500).send(errorHtml("Error in page decoding. Try again later or check the url."));
+                } else {
+                    try {
+                        const html = await fs.readFileSync(pageHtmlFilePath, 'utf8');
+                        res.status(200).send(fixUtl(addLoader(html)));
+                    } catch (e) {
+                        res.status(500).send(errorHtml("This page is currently unresponsive. Try again later or check the url."));
+                    }
+                }
+            } else {
+                res.status(500).send(errorHtml("This page is currently unresponsive. Try again later or check the url."));
+            }
+        }
+    }
+})
 
 app.get('/tor', async (req: Request, res: Response) => {
 

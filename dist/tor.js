@@ -27,7 +27,6 @@ class Tor {
                     path: `${process.env.TEMP_DIRECTORY}${screenshotFileName}`,
                     fullPage: false
                 }));
-                console.log("page:", page);
                 // link
                 response.links = yield (page === null || page === void 0 ? void 0 : page.$$eval('a', links => links === null || links === void 0 ? void 0 : links.map(a => a.href)));
                 // innerHtml

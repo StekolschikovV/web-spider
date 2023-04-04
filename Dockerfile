@@ -23,14 +23,12 @@ COPY ./package.json \
   ./tsconfig.json \
   ./
 
-RUN npm i -g pm2 npm@9.2.0
+RUN npm i -g pm2 npm@9.2.0 mhtml2html
 RUN npm i && npm run build
 
 RUN rm -rf src
 
-
-#HEALTHCHECK --start-period=150s --interval=300s --retries=99999 --timeout=120s CMD curl --fail http://localhost:3000/healthcheck || kill 1
-HEALTHCHECK --interval=30s --timeout=30s --retries=3 CMD curl -sS 127.0.0.1:3000/healthcheck || exit 1
+HEALTHCHECK --start-period=30s --interval=15s --timeout=13s CMD curl --fail http://127.0.0.1:3000/healthcheck  || exit 1
 
 EXPOSE 3000
 

@@ -1,35 +1,44 @@
-import explorer from "./explorer";
-
-export async function getTopPreviewer(url: string) {
-
-    console.log("getTopPreviewer:", url)
-
-    let result
-    let page = await explorer.getTorPage(url)
-
-    try {
-        const cdp = await page.target().createCDPSession();
-        const { data } = await cdp.send('Page.captureSnapshot', { format: 'mhtml' });
-        result = data
-    } catch (err) { }
-
-    return result
+"use strict";
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.errorHtml = exports.addStartLoader = exports.addLoader = exports.fixUtl = exports.urlToFileName = exports.getTopPreviewer = void 0;
+const explorer_1 = __importDefault(require("./explorer"));
+function getTopPreviewer(url) {
+    return __awaiter(this, void 0, void 0, function* () {
+        console.log("getTopPreviewer:", url);
+        let result;
+        let page = yield explorer_1.default.getTorPage(url);
+        try {
+            const cdp = yield page.target().createCDPSession();
+            const { data } = yield cdp.send('Page.captureSnapshot', { format: 'mhtml' });
+            result = data;
+        }
+        catch (err) { }
+        return result;
+    });
 }
-
-export const urlToFileName = (url: string): string =>
-    url.replaceAll(":", "🏈").replaceAll("/", "💘").replaceAll(".", "🎭").replaceAll("?", "🇧🇷")
-
-
-
-export const fixUtl = (htmlText: string): string =>
-    htmlText
-        .replaceAll(`href="http`, `href="?url=http`)
-        .replaceAll(`action="http`, `action="?url=http`)
-        .replaceAll(`_blank`, "")
-        .replaceAll(`<a `, "<a target='_self'")
-
-const loaderHTML = `<div id="loader-wrapper" style="display: none"><div id="loader"></div></div>`
-const loaderStartHTML = `<div id="loader-wrapper"><div id="loader"></div></div>`
+exports.getTopPreviewer = getTopPreviewer;
+const urlToFileName = (url) => url.replaceAll(":", "🏈").replaceAll("/", "💘").replaceAll(".", "🎭").replaceAll("?", "🇧🇷");
+exports.urlToFileName = urlToFileName;
+const fixUtl = (htmlText) => htmlText
+    .replaceAll(`href="http`, `href="?url=http`)
+    .replaceAll(`action="http`, `action="?url=http`)
+    .replaceAll(`_blank`, "")
+    .replaceAll(`<a `, "<a target='_self'");
+exports.fixUtl = fixUtl;
+const loaderHTML = `<div id="loader-wrapper" style="display: none"><div id="loader"></div></div>`;
+const loaderStartHTML = `<div id="loader-wrapper"><div id="loader"></div></div>`;
 const loaderCSS = `
     <style>
         ::-webkit-scrollbar {
@@ -97,8 +106,7 @@ const loaderCSS = `
           to{ bottom:0; opacity:1 }
         }
     </style>
-`
-
+`;
 const loaderJS = `
                     <script>
                         document.querySelectorAll("a").forEach(a => a.addEventListener("click", (e) => {
@@ -108,23 +116,21 @@ const loaderJS = `
                             },500)}
                         ))
                     </script>
-                `
-
-export const addLoader = (htmlText: string) => {
+                `;
+const addLoader = (htmlText) => {
     return htmlText
         .replaceAll(`</head>`, `${loaderCSS}</head>`)
         .replaceAll(`</body>`, `${loaderHTML}</body>`)
-        .replaceAll(`</body>`, `${loaderJS}</body>`)
-}
-
-export const addStartLoader = (htmlText: string) => {
+        .replaceAll(`</body>`, `${loaderJS}</body>`);
+};
+exports.addLoader = addLoader;
+const addStartLoader = (htmlText) => {
     return htmlText
         .replaceAll(`</head>`, `${loaderCSS}</head>`)
-        .replaceAll(`</body>`, `${loaderStartHTML}</body>`)
-}
-
-
-export const errorHtml = (errorText: string) => {
+        .replaceAll(`</body>`, `${loaderStartHTML}</body>`);
+};
+exports.addStartLoader = addStartLoader;
+const errorHtml = (errorText) => {
     return `
         <style>
             body {
@@ -150,5 +156,6 @@ export const errorHtml = (errorText: string) => {
                 ${errorText}
              </h4>
         </div>
-`
-}
+`;
+};
+exports.errorHtml = errorHtml;
