@@ -18,10 +18,12 @@ app.get('/healthcheck', async (req: Request, res: Response) => {
 
 
     if (torResponse?.status === 1 && seoResponse?.status === 1) {
+        console.log("healthcheck", 1)
         res.status(200).json({
             status: 1
         })
     } else {
+        console.log("healthcheck", 0)
         res.status(500).json({
             status: 0
         })

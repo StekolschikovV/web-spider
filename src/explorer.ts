@@ -1,8 +1,5 @@
 import puppeteer, { Browser, Page } from "puppeteer";
 
-// TODO: delete after test
-console.log("~~~~~MODE", process.env.MODE)
-
 class Explorer {
 
     browser: Browser

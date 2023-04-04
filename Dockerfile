@@ -30,7 +30,7 @@ RUN rm -rf src
 
 
 #HEALTHCHECK --start-period=150s --interval=300s --retries=99999 --timeout=120s CMD curl --fail http://localhost:3000/healthcheck || kill 1
-HEALTHCHECK --interval=50s --timeout=100s --retries=3 CMD curl -sS 127.0.0.1:3000/healthcheck || exit 1
+HEALTHCHECK --interval=30s --timeout=30s --retries=3 CMD curl -sS 127.0.0.1:3000/healthcheck || exit 1
 
 EXPOSE 3000
 
