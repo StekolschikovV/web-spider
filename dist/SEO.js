@@ -18,7 +18,7 @@ const explorer_1 = __importDefault(require("./explorer"));
 const data_collector_1 = __importDefault(require("./data-collector"));
 const getSEO = (url) => __awaiter(void 0, void 0, void 0, function* () {
     var _a;
-    console.log(url);
+    console.log("getSEO", url);
     let result = [];
     let title, description, keywords, content, metrics, loadTime, inGoogleSearch;
     let tagsCount = {
@@ -38,7 +38,6 @@ const getSEO = (url) => __awaiter(void 0, void 0, void 0, function* () {
     description = yield data_collector_1.default.getDescription(page);
     tagsCount = yield data_collector_1.default.getTagsCount(page);
     const _imgs = yield data_collector_1.default.getImages(page);
-    console.log("step:", 1);
     for (let i in _imgs) {
         let img = _imgs[i];
         let _url = new URL(url);
@@ -59,12 +58,10 @@ const getSEO = (url) => __awaiter(void 0, void 0, void 0, function* () {
         img.size = size;
         imgs.push(img);
     }
-    console.log("step:", 2);
     page === null || page === void 0 ? void 0 : page.close();
     page = yield explorer_1.default.getPage(url);
     inGoogleSearch = yield data_collector_1.default.getInGoogleSearch(page);
     page === null || page === void 0 ? void 0 : page.close();
-    console.log("step:", 3);
     if (!title || (title === null || title === void 0 ? void 0 : title.length) < 5) {
         result.push({
             type: "error",
@@ -77,7 +74,6 @@ const getSEO = (url) => __awaiter(void 0, void 0, void 0, function* () {
             text: `The length of the title meta tag should be between 70-80 characters. Current length: ${title === null || title === void 0 ? void 0 : title.length}.`
         });
     }
-    console.log("step:", 4);
     imgs.forEach(img => {
         var _a, _b;
         if (((_a = img === null || img === void 0 ? void 0 : img.src) === null || _a === void 0 ? void 0 : _a.length) > 0 && ((_b = img === null || img === void 0 ? void 0 : img.alt) === null || _b === void 0 ? void 0 : _b.length) < 3) {
@@ -93,14 +89,13 @@ const getSEO = (url) => __awaiter(void 0, void 0, void 0, function* () {
             });
         }
     });
-    console.log("step:", 5);
     if ((tagsCount === null || tagsCount === void 0 ? void 0 : tagsCount.h1) !== 1) {
         result.push({
             type: "error",
             text: `The page must contain one h1 tag. Current count: ${tagsCount === null || tagsCount === void 0 ? void 0 : tagsCount.h1}.`
         });
     }
-    if (tagsCount.p === 0) {
+    if ((tagsCount === null || tagsCount === void 0 ? void 0 : tagsCount.p) === 0) {
         result.push({
             type: "warning",
             text: `Page content must be in the p tag.`
@@ -118,7 +113,6 @@ const getSEO = (url) => __awaiter(void 0, void 0, void 0, function* () {
             text: `The length of keywords should be in the range of 20-150 characters. Current length: ${keywords === null || keywords === void 0 ? void 0 : keywords.length}.`
         });
     }
-    console.log("step:", 6);
     if (inGoogleSearch === 0) {
         result.push({
             type: "error",
@@ -133,17 +127,15 @@ const getSEO = (url) => __awaiter(void 0, void 0, void 0, function* () {
     }
     const contentBitesLength = (_a = Buffer.from(content)) === null || _a === void 0 ? void 0 : _a.length;
     const contentKiloBytesLength = contentBitesLength / 1000;
-    console.log("step:", 7);
     if (125 < contentKiloBytesLength) {
         result.push({
             type: "warning",
             text: `The html size exceeds the allowed size of 125kb. Current size: ${contentKiloBytesLength}kb.`
         });
     }
-    console.log("step:", 8);
     if (title) {
+        console.log("getSEO return", 1);
         page === null || page === void 0 ? void 0 : page.close();
-        console.log("step:", 9);
         return {
             status: 1,
             data: result,
@@ -155,7 +147,8 @@ const getSEO = (url) => __awaiter(void 0, void 0, void 0, function* () {
         };
     }
     else {
-        console.log("step:", 10);
+        console.log("getSEO return", 3);
+        page === null || page === void 0 ? void 0 : page.close();
         return {
             status: 3,
             data: [

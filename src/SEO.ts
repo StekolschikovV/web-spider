@@ -8,7 +8,9 @@ interface ISEO {
 }
 
 export const getSEO = async (url) => {
-    console.log(url)
+
+    console.log("getSEO", url)
+
     let result: ISEO[] = []
     let title, description, keywords, content, metrics, loadTime, inGoogleSearch
     let tagsCount: ITagsCount = {
@@ -29,7 +31,6 @@ export const getSEO = async (url) => {
     description = await dataCollector.getDescription(page)
     tagsCount = await dataCollector.getTagsCount(page)
     const _imgs = await dataCollector.getImages(page)
-    console.log("step:", 1)
 
     for (let i in _imgs) {
         let img = _imgs[i];
@@ -51,16 +52,11 @@ export const getSEO = async (url) => {
         imgs.push(img)
     }
 
-    console.log("step:", 2)
-
     page?.close()
     page = await explorer.getPage(url)
     inGoogleSearch = await dataCollector.getInGoogleSearch(page)
 
     page?.close()
-
-    console.log("step:", 3)
-
 
     if (!title || title?.length < 5) {
         result.push({
@@ -73,9 +69,9 @@ export const getSEO = async (url) => {
             text: `The length of the title meta tag should be between 70-80 characters. Current length: ${title?.length}.`
         })
     }
-    console.log("step:", 4)
 
     imgs.forEach(img => {
+
         if (img?.src?.length > 0 && img?.alt?.length < 3) {
             result.push({
                 type: "warning",
@@ -89,7 +85,6 @@ export const getSEO = async (url) => {
             })
         }
     })
-    console.log("step:", 5)
 
     if (tagsCount?.h1 !== 1) {
         result.push({
@@ -98,7 +93,7 @@ export const getSEO = async (url) => {
         })
     }
 
-    if (tagsCount.p === 0) {
+    if (tagsCount?.p === 0) {
         result.push({
             type: "warning",
             text: `Page content must be in the p tag.`
@@ -119,8 +114,6 @@ export const getSEO = async (url) => {
         })
     }
 
-    console.log("step:", 6)
-
     if (inGoogleSearch === 0) {
         result.push({
             type: "error",
@@ -138,22 +131,17 @@ export const getSEO = async (url) => {
     const contentBitesLength = Buffer.from(content)?.length
     const contentKiloBytesLength = contentBitesLength / 1000
 
-    console.log("step:", 7)
-
     if (125 < contentKiloBytesLength) {
         result.push({
             type: "warning",
             text: `The html size exceeds the allowed size of 125kb. Current size: ${contentKiloBytesLength}kb.`
         })
     }
-
-    console.log("step:", 8)
-
     if (title) {
 
-        page?.close()
+        console.log("getSEO return", 1)
 
-        console.log("step:", 9)
+        page?.close()
 
         return {
             status: 1,
@@ -164,9 +152,12 @@ export const getSEO = async (url) => {
                 keywords,
             }
         }
+
     } else {
 
-        console.log("step:", 10)
+        console.log("getSEO return", 3)
+
+        page?.close()
 
         return {
             status: 3,
