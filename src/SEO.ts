@@ -52,11 +52,8 @@ export const getSEO = async (url) => {
         imgs.push(img)
     }
 
-    page?.close()
     page = await explorer.getPage(url)
     inGoogleSearch = await dataCollector.getInGoogleSearch(page)
-
-    page?.close()
 
     if (!title || title?.length < 5) {
         result.push({
@@ -141,8 +138,6 @@ export const getSEO = async (url) => {
 
         console.log("getSEO return", 1)
 
-        page?.close()
-
         return {
             status: 1,
             data: result,
@@ -156,8 +151,6 @@ export const getSEO = async (url) => {
     } else {
 
         console.log("getSEO return", 3)
-
-        page?.close()
 
         return {
             status: 3,
