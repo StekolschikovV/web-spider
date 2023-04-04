@@ -44,7 +44,7 @@ const tor_1 = __importDefault(require("./tor"));
 const previewer_1 = require("./previewer");
 const urlParser = require('url');
 const app = (0, express_1.default)();
-const port = process.env.PORT || 3000;
+const port = process.env.PORT || 1340;
 app.get('/healthcheck', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     let torResponse, seoResponse;
     try {
@@ -61,6 +61,7 @@ app.get('/healthcheck', (req, res) => __awaiter(void 0, void 0, void 0, function
         });
     }
     else {
+        process.exit(1);
         console.log("healthcheck", 0);
         res.status(500).json({
             status: 0
@@ -68,10 +69,9 @@ app.get('/healthcheck', (req, res) => __awaiter(void 0, void 0, void 0, function
     }
 }));
 app.get('/previewer', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const unresponsiveText = "This page is currently unresponsive. Try again later or check the url. <button onclick='window.location.reload()' style='cursor: pointer; background: transparent; color: white; border: 0; display: block; margin: auto; font-size: 24px; padding: 40px;'>Reload now</button><button onclick='history.back()' style='background: transparent; color: white; border: 0; display: block; margin: auto; font-size: 16px; padding: 0px;cursor: pointer;'>Go Back</button>";
     const { url } = urlParser.parse(req.url, true).query;
-    console.log(1);
     if (url && typeof url === "string") {
-        console.log(2);
         const pageFileName = (0, previewer_1.urlToFileName)(url);
         const pageHtmlFilePath = path_1.default.join(__dirname, 'cache', `${pageFileName}.html`);
         const pageMhtmlFilePath = path_1.default.join(__dirname, 'cache', `${pageFileName}.mhtml`);
@@ -79,50 +79,37 @@ app.get('/previewer', (req, res) => __awaiter(void 0, void 0, void 0, function* 
             fs.mkdirSync(path_1.default.join(__dirname, 'cache'));
         }
         if (fs.existsSync(pageHtmlFilePath)) {
-            console.log('2');
             const html = yield fs.readFileSync(pageHtmlFilePath, 'utf8');
             res.send((0, previewer_1.fixUtl)((0, previewer_1.addLoader)(html)));
         }
         else {
-            console.log('4');
             const pageMhtml = yield (0, previewer_1.getTopPreviewer)(url);
             if (pageMhtml) {
                 yield fs.writeFileSync(pageMhtmlFilePath, pageMhtml);
                 let mhtml2htmlError = false;
-                // console.log('5', pageMhtml);
                 try {
-                    console.log('5', `${pageFileName}.mhtml`);
-                    console.log('5', `${pageFileName}.html`);
-                    console.log('cwd', process.cwd());
-                    let result1 = (0, child_process_1.execSync)(`ls`, { cwd: path_1.default.join('./dist/', 'cache') });
-                    console.log('5.1', result1);
-                    let result = (0, child_process_1.execSync)(`npx mhtml2html ${pageFileName}.mhtml ${pageFileName}.html`, { cwd: path_1.default.join('./dist/', 'cache') });
+                    let result = (0, child_process_1.execSync)(`mhtml2html ${pageFileName}.mhtml ${pageFileName}.html`, { cwd: path_1.default.join('./dist/', 'cache') });
                     fs.unlink(pageMhtmlFilePath, () => {
                     });
                 }
                 catch (e) {
-                    console.log('5.2', e);
                     mhtml2htmlError = true;
                 }
                 if (mhtml2htmlError) {
-                    console.log('++2+mhtml2htmlError', pageHtmlFilePath);
                     res.status(500).send((0, previewer_1.errorHtml)("Error in page decoding. Try again later or check the url."));
                 }
                 else {
                     try {
                         const html = yield fs.readFileSync(pageHtmlFilePath, 'utf8');
-                        console.log('+++html', pageHtmlFilePath, html);
                         res.status(200).send((0, previewer_1.fixUtl)((0, previewer_1.addLoader)(html)));
                     }
                     catch (e) {
-                        console.log('+++3', pageHtmlFilePath);
-                        res.status(500).send((0, previewer_1.errorHtml)("This page is currently unresponsive. Try again later or check the url."));
+                        res.status(500).send((0, previewer_1.errorHtml)(unresponsiveText));
                     }
                 }
             }
             else {
-                console.log('+++4', pageHtmlFilePath);
-                res.status(500).send((0, previewer_1.errorHtml)("This page is currently unresponsive. Try again later or check the url."));
+                res.status(500).send((0, previewer_1.errorHtml)(unresponsiveText));
             }
         }
     }

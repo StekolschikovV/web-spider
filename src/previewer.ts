@@ -2,31 +2,32 @@ import explorer from "./explorer";
 
 export async function getTopPreviewer(url: string) {
 
-    console.log("getTopPreviewer:", url)
+  console.log("getTopPreviewer:", url)
 
-    let result
-    let page = await explorer.getTorPage(url)
+  let result
+  let page = await explorer.getTorPage(url)
 
-    try {
-        const cdp = await page.target().createCDPSession();
-        const { data } = await cdp.send('Page.captureSnapshot', { format: 'mhtml' });
-        result = data
-    } catch (err) { }
+  try {
+    const cdp = await page.target().createCDPSession();
+    const { data } = await cdp.send('Page.captureSnapshot', { format: 'mhtml' });
+    result = data
+  } catch (err) { }
 
-    return result
+  return result
 }
 
-export const urlToFileName = (url: string): string =>
-    url.replaceAll(":", "🏈").replaceAll("/", "💘").replaceAll(".", "🎭").replaceAll("?", "🇧🇷")
+export const urlToFileName = (url: string): string => {
+  return url?.replaceAll(":", "🏈")?.replaceAll("/", "💘")?.replaceAll(".", "🎭")?.replaceAll("?", "🇧🇷")
+}
 
 
 
 export const fixUtl = (htmlText: string): string =>
-    htmlText
-        .replaceAll(`href="http`, `href="?url=http`)
-        .replaceAll(`action="http`, `action="?url=http`)
-        .replaceAll(`_blank`, "")
-        .replaceAll(`<a `, "<a target='_self'")
+  htmlText
+    ?.replaceAll(`href="http`, `href="?url=http`)
+    ?.replaceAll(`action="http`, `action="?url=http`)
+    ?.replaceAll(`_blank`, "")
+    ?.replaceAll(`<a `, "<a target='_self'")
 
 const loaderHTML = `<div id="loader-wrapper" style="display: none"><div id="loader"></div></div>`
 const loaderStartHTML = `<div id="loader-wrapper"><div id="loader"></div></div>`
@@ -111,21 +112,21 @@ const loaderJS = `
                 `
 
 export const addLoader = (htmlText: string) => {
-    return htmlText
-        .replaceAll(`</head>`, `${loaderCSS}</head>`)
-        .replaceAll(`</body>`, `${loaderHTML}</body>`)
-        .replaceAll(`</body>`, `${loaderJS}</body>`)
+  return htmlText
+    .replaceAll(`</head>`, `${loaderCSS}</head>`)
+    .replaceAll(`</body>`, `${loaderHTML}</body>`)
+    .replaceAll(`</body>`, `${loaderJS}</body>`)
 }
 
 export const addStartLoader = (htmlText: string) => {
-    return htmlText
-        .replaceAll(`</head>`, `${loaderCSS}</head>`)
-        .replaceAll(`</body>`, `${loaderStartHTML}</body>`)
+  return htmlText
+    .replaceAll(`</head>`, `${loaderCSS}</head>`)
+    .replaceAll(`</body>`, `${loaderStartHTML}</body>`)
 }
 
 
 export const errorHtml = (errorText: string) => {
-    return `
+  return `
         <style>
             body {
                 background: #161515;

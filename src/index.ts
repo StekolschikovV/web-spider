@@ -9,7 +9,7 @@ import { urlToFileName, fixUtl, addLoader, errorHtml, getTopPreviewer } from './
 
 const urlParser = require('url')
 const app: Express = express();
-const port = process.env.PORT || 3000;
+const port = process.env.PORT || 1340;
 
 app.get('/healthcheck', async (req: Request, res: Response) => {
 
@@ -38,6 +38,7 @@ app.get('/healthcheck', async (req: Request, res: Response) => {
 
 app.get('/previewer', async (req: Request, res: Response) => {
 
+    const unresponsiveText = "This page is currently unresponsive. Try again later or check the url. <button onclick='window.location.reload()' style='cursor: pointer; background: transparent; color: white; border: 0; display: block; margin: auto; font-size: 24px; padding: 40px;'>Reload now</button><button onclick='history.back()' style='background: transparent; color: white; border: 0; display: block; margin: auto; font-size: 16px; padding: 0px;cursor: pointer;'>Go Back</button>"
     const { url } = urlParser.parse(req.url, true).query
 
     if (url && typeof url === "string") {
@@ -64,7 +65,7 @@ app.get('/previewer', async (req: Request, res: Response) => {
 
                 try {
                     let result = execSync(
-                        `npx mhtml2html ${pageFileName}.mhtml ${pageFileName}.html`,
+                        `mhtml2html ${pageFileName}.mhtml ${pageFileName}.html`,
                         { cwd: path.join('./dist/', 'cache') }
                     )
                     fs.unlink(pageMhtmlFilePath, () => {
@@ -79,11 +80,11 @@ app.get('/previewer', async (req: Request, res: Response) => {
                         const html = await fs.readFileSync(pageHtmlFilePath, 'utf8');
                         res.status(200).send(fixUtl(addLoader(html)));
                     } catch (e) {
-                        res.status(500).send(errorHtml("This page is currently unresponsive. Try again later or check the url."));
+                        res.status(500).send(errorHtml(unresponsiveText));
                     }
                 }
             } else {
-                res.status(500).send(errorHtml("This page is currently unresponsive. Try again later or check the url."));
+                res.status(500).send(errorHtml(unresponsiveText));
             }
         }
     }

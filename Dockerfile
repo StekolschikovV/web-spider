@@ -28,7 +28,9 @@ RUN npm i && npm run build
 
 RUN rm -rf src
 
-HEALTHCHECK --start-period=30s --interval=15s --timeout=13s CMD curl --fail http://127.0.0.1:3000/healthcheck  || exit 1
+VOLUME ./cache
+
+HEALTHCHECK --start-period=130s --interval=150s --timeout=130s CMD curl --fail http://127.0.0.1:3000/healthcheck  || exit 1
 
 EXPOSE 3000
 

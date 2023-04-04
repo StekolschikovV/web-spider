@@ -29,13 +29,15 @@ function getTopPreviewer(url) {
     });
 }
 exports.getTopPreviewer = getTopPreviewer;
-const urlToFileName = (url) => url.replaceAll(":", "🏈").replaceAll("/", "💘").replaceAll(".", "🎭").replaceAll("?", "🇧🇷");
+const urlToFileName = (url) => {
+    var _a, _b, _c;
+    return (_c = (_b = (_a = url === null || url === void 0 ? void 0 : url.replaceAll(":", "🏈")) === null || _a === void 0 ? void 0 : _a.replaceAll("/", "💘")) === null || _b === void 0 ? void 0 : _b.replaceAll(".", "🎭")) === null || _c === void 0 ? void 0 : _c.replaceAll("?", "🇧🇷");
+};
 exports.urlToFileName = urlToFileName;
-const fixUtl = (htmlText) => htmlText
-    .replaceAll(`href="http`, `href="?url=http`)
-    .replaceAll(`action="http`, `action="?url=http`)
-    .replaceAll(`_blank`, "")
-    .replaceAll(`<a `, "<a target='_self'");
+const fixUtl = (htmlText) => {
+    var _a, _b, _c;
+    return (_c = (_b = (_a = htmlText === null || htmlText === void 0 ? void 0 : htmlText.replaceAll(`href="http`, `href="?url=http`)) === null || _a === void 0 ? void 0 : _a.replaceAll(`action="http`, `action="?url=http`)) === null || _b === void 0 ? void 0 : _b.replaceAll(`_blank`, "")) === null || _c === void 0 ? void 0 : _c.replaceAll(`<a `, "<a target='_self'");
+};
 exports.fixUtl = fixUtl;
 const loaderHTML = `<div id="loader-wrapper" style="display: none"><div id="loader"></div></div>`;
 const loaderStartHTML = `<div id="loader-wrapper"><div id="loader"></div></div>`;
