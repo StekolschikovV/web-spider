@@ -6,10 +6,10 @@ module.exports = {
             automation: false
         },
         // TODO: !
-        // {
-        //     name: "Tor",
-        //     script: "tor",
-        //     automation: false
-        // }
+        {
+            name: "Tor",
+            script: "tor",
+            automation: false
+        }
     ]
 }
