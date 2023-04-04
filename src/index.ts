@@ -41,6 +41,25 @@ const port = process.env.PORT || 3000;
 
 
 
+app.get('/tor', async (req: Request, res: Response) => {
+    const { url } = urlParser.parse(req.url, true).query
+    if (url) {
+        const page = await explorer.getTorPage(url)
+        const title = await page?.title()
+        res.status(200).json({
+            status: 1,
+            data: {
+                title
+            }
+        })
+    } else {
+        res.json({
+            status: 0,
+            error: "not url"
+        })
+    }
+})
+
 app.get('/seo', async (req: Request, res: Response) => {
     const { url } = urlParser.parse(req.url, true).query
     if (url) {

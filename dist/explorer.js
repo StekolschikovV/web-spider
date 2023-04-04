@@ -13,22 +13,29 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const puppeteer_1 = __importDefault(require("puppeteer"));
+// TODO: delete after test
+console.log("~~~~~MODE", process.env.MODE);
 class Explorer {
     constructor() {
         this.init = () => __awaiter(this, void 0, void 0, function* () {
-            this.browser = yield puppeteer_1.default.launch({
-                args: ['--no-sandbox', '--disable-setuid-sandbox',],
-                headless: true,
-                // executablePath: '/usr/bin/google-chrome',
-            });
+            this.browser = yield puppeteer_1.default.launch(Object.assign({ args: ['--no-sandbox', '--disable-setuid-sandbox'], headless: true, defaultViewport: { width: 1080, height: 1024 } }, (process.env.MODE === "docker" && { executablePath: '/usr/bin/google-chrome' })));
+            this.torBrowser = yield puppeteer_1.default
+                .launch(Object.assign({ args: ['--no-sandbox', '--disable-setuid-sandbox', '--proxy-server=socks5://localhost:9050'], defaultViewport: { width: 1080, height: 1024 } }, (process.env.MODE === "docker" && { executablePath: '/usr/bin/google-chrome' })));
         });
         this.getPage = (url) => __awaiter(this, void 0, void 0, function* () {
             try {
                 const [page] = yield this.browser.pages();
-                yield (page === null || page === void 0 ? void 0 : page.setViewport({ width: 1080, height: 1024 }));
-                yield (page === null || page === void 0 ? void 0 : page.goto(url, {
-                    waitUntil: 'networkidle0'
-                }));
+                yield (page === null || page === void 0 ? void 0 : page.goto(url, { waitUntil: 'networkidle0' }));
+                return page;
+            }
+            catch (e) {
+                return null;
+            }
+        });
+        this.getTorPage = (url) => __awaiter(this, void 0, void 0, function* () {
+            try {
+                const [page] = yield this.torBrowser.pages();
+                yield (page === null || page === void 0 ? void 0 : page.goto(url, { waitUntil: 'networkidle0' }));
                 return page;
             }
             catch (e) {
@@ -36,8 +43,9 @@ class Explorer {
             }
         });
         this.close = () => __awaiter(this, void 0, void 0, function* () {
-            var _a;
+            var _a, _b;
             yield ((_a = this.browser) === null || _a === void 0 ? void 0 : _a.close());
+            yield ((_b = this.torBrowser) === null || _b === void 0 ? void 0 : _b.close());
         });
         this.init();
     }

@@ -1,8 +1,12 @@
 import puppeteer, { Browser, Page } from "puppeteer";
 
+// TODO: delete after test
+console.log("~~~~~MODE", process.env.MODE)
+
 class Explorer {
 
     browser: Browser
+    torBrowser: Browser
 
     constructor() {
         this.init()
@@ -10,19 +14,34 @@ class Explorer {
 
     private init = async () => {
         this.browser = await puppeteer.launch({
-            args: ['--no-sandbox', '--disable-setuid-sandbox',],
+            args: ['--no-sandbox', '--disable-setuid-sandbox'],
             headless: true,
-            // executablePath: '/usr/bin/google-chrome',
+            defaultViewport: { width: 1080, height: 1024 },
+            ...(process.env.MODE === "docker" && { executablePath: '/usr/bin/google-chrome' }),
         })
+        this.torBrowser = await puppeteer
+            .launch({
+                args: ['--no-sandbox', '--disable-setuid-sandbox', '--proxy-server=socks5://localhost:9050'],
+                defaultViewport: { width: 1080, height: 1024 },
+                ...(process.env.MODE === "docker" && { executablePath: '/usr/bin/google-chrome' }),
+            })
     }
 
     public getPage = async (url: string): Promise<Page | null> => {
         try {
             const [page] = await this.browser.pages();
-            await page?.setViewport({ width: 1080, height: 1024 })
-            await page?.goto(url, {
-                waitUntil: 'networkidle0'
-            })
+            await page?.goto(url, { waitUntil: 'networkidle0' })
+            return page
+        } catch (e) {
+            return null
+        }
+    }
+
+
+    public getTorPage = async (url: string): Promise<Page | null> => {
+        try {
+            const [page] = await this.torBrowser.pages();
+            await page?.goto(url, { waitUntil: 'networkidle0' })
             return page
         } catch (e) {
             return null
@@ -31,6 +50,7 @@ class Explorer {
 
     public close = async () => {
         await this.browser?.close();
+        await this.torBrowser?.close();
     }
 
 }

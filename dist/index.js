@@ -44,6 +44,25 @@ const port = process.env.PORT || 3000;
 //         process.exit(1);
 //     }
 // });
+app.get('/tor', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { url } = urlParser.parse(req.url, true).query;
+    if (url) {
+        const page = yield explorer_1.default.getTorPage(url);
+        const title = yield (page === null || page === void 0 ? void 0 : page.title());
+        res.status(200).json({
+            status: 1,
+            data: {
+                title
+            }
+        });
+    }
+    else {
+        res.json({
+            status: 0,
+            error: "not url"
+        });
+    }
+}));
 app.get('/seo', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { url } = urlParser.parse(req.url, true).query;
     if (url) {
