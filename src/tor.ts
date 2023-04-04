@@ -17,7 +17,6 @@ class Tor {
                 path: `${process.env.TEMP_DIRECTORY}${screenshotFileName}`,
                 fullPage: false
             })
-            console.log("page:", page)
             // link
             response.links = await page?.$$eval('a', links => links?.map(a => a.href))
             // innerHtml
