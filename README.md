@@ -1,4 +1,7 @@
-docker build -t stekolschikov/web-spider:latest . 
+docker build -t stekolschikov/web-spider:latest .
+
+docker run -d -it -p 3000:3000 stekolschikov/web-spider:latest
+
 
 
 docker push stekolschikov/dev-guns-spider:latest

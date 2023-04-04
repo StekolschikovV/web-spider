@@ -33,12 +33,16 @@ class Explorer {
             }
         });
         this.getTorPage = (url) => __awaiter(this, void 0, void 0, function* () {
+            console.log('getTorPage', 1);
             try {
                 const [page] = yield this.torBrowser.pages();
+                console.log('getTorPage', 2, page);
                 yield (page === null || page === void 0 ? void 0 : page.goto(url, { waitUntil: 'networkidle0' }));
+                console.log('getTorPage', 3.);
                 return page;
             }
             catch (e) {
+                console.log('getTorPage', 4, e);
                 return null;
             }
         });

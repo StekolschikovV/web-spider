@@ -58,10 +58,8 @@ const getSEO = (url) => __awaiter(void 0, void 0, void 0, function* () {
         img.size = size;
         imgs.push(img);
     }
-    page === null || page === void 0 ? void 0 : page.close();
     page = yield explorer_1.default.getPage(url);
     inGoogleSearch = yield data_collector_1.default.getInGoogleSearch(page);
-    page === null || page === void 0 ? void 0 : page.close();
     if (!title || (title === null || title === void 0 ? void 0 : title.length) < 5) {
         result.push({
             type: "error",
@@ -135,7 +133,6 @@ const getSEO = (url) => __awaiter(void 0, void 0, void 0, function* () {
     }
     if (title) {
         console.log("getSEO return", 1);
-        page === null || page === void 0 ? void 0 : page.close();
         return {
             status: 1,
             data: result,
@@ -148,7 +145,6 @@ const getSEO = (url) => __awaiter(void 0, void 0, void 0, function* () {
     }
     else {
         console.log("getSEO return", 3);
-        page === null || page === void 0 ? void 0 : page.close();
         return {
             status: 3,
             data: [

@@ -60,11 +60,10 @@ class Tor {
                 response.statusCode = 600;
             }
             finally {
-                page === null || page === void 0 ? void 0 : page.close();
+                // page?.close()
             }
             if (response === null || response === void 0 ? void 0 : response.title) {
                 console.log("getTor return", 1);
-                page === null || page === void 0 ? void 0 : page.close();
                 return {
                     status: 1,
                     data: response,
@@ -77,7 +76,6 @@ class Tor {
             }
             else {
                 console.log("getTor return", 3);
-                page === null || page === void 0 ? void 0 : page.close();
                 return {
                     status: 3,
                     data: [

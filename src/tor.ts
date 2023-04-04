@@ -46,14 +46,12 @@ class Tor {
         } catch (e) {
             response.statusCode = 600
         } finally {
-            page?.close()
+            // page?.close()
         }
 
         if (response?.title) {
 
             console.log("getTor return", 1)
-
-            page?.close()
 
             return {
                 status: 1,
@@ -68,8 +66,6 @@ class Tor {
         } else {
 
             console.log("getTor return", 3)
-
-            page?.close()
 
             return {
                 status: 3,
