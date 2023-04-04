@@ -36,15 +36,11 @@ class Explorer {
 
 
     public getTorPage = async (url: string): Promise<Page | null> => {
-        console.log('getTorPage', 1);
         try {
             const [page] = await this.torBrowser.pages();
-            console.log('getTorPage', 2, page);
             await page?.goto(url, { waitUntil: 'networkidle0' })
-            console.log('getTorPage', 3.);
             return page
         } catch (e) {
-            console.log('getTorPage', 4, e);
             return null
         }
     }

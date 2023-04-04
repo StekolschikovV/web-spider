@@ -9,13 +9,13 @@ const port = process.env.PORT || 3000;
 app.get('/healthcheck', async (req: Request, res: Response) => {
 
     let torResponse, seoResponse
+
     try {
         const url = "https://www.mozilla.org/"
         const torUrl = "http://underdiriled6lvdfgiw4e5urfofuslnz7ewictzf76h4qb73fxbsxad.onion/"
         torResponse = await tor.get(torUrl)
         seoResponse = await getSEO(url)
     } catch (e) { }
-
 
     if (torResponse?.status === 1 && seoResponse?.status === 1) {
         console.log("healthcheck", 1)
@@ -30,11 +30,10 @@ app.get('/healthcheck', async (req: Request, res: Response) => {
     }
 });
 
-
-
-
 app.get('/tor', async (req: Request, res: Response) => {
+
     const { url } = urlParser.parse(req.url, true).query
+
     if (url) {
         const response = await tor.get(url)
         res.status(200).json(response)
@@ -47,7 +46,9 @@ app.get('/tor', async (req: Request, res: Response) => {
 })
 
 app.get('/seo', async (req: Request, res: Response) => {
+
     const { url } = urlParser.parse(req.url, true).query
+
     if (url) {
         const seo = await getSEO(url)
         res.status(200).json(seo)
