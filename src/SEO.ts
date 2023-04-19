@@ -1,6 +1,6 @@
 import axios from "axios";
-import explorer from "./explorer";
 import dataCollector, { IImage, ITagsCount } from "./data-collector";
+import explorer from "./explorer";
 
 interface ISEO {
     type: "warning" | "error"
@@ -8,8 +8,6 @@ interface ISEO {
 }
 
 export const getSEO = async (url) => {
-
-    console.log("getSEO", url)
 
     let result: ISEO[] = []
     let title, description, keywords, content, metrics, loadTime, inGoogleSearch
@@ -136,8 +134,6 @@ export const getSEO = async (url) => {
     }
     if (title) {
 
-        console.log("getSEO return", 1)
-
         return {
             status: 1,
             data: result,
@@ -149,9 +145,6 @@ export const getSEO = async (url) => {
         }
 
     } else {
-
-        console.log("getSEO return", 3)
-
         return {
             status: 3,
             data: [

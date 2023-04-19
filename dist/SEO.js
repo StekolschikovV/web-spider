@@ -14,11 +14,10 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.getSEO = void 0;
 const axios_1 = __importDefault(require("axios"));
-const explorer_1 = __importDefault(require("./explorer"));
 const data_collector_1 = __importDefault(require("./data-collector"));
+const explorer_1 = __importDefault(require("./explorer"));
 const getSEO = (url) => __awaiter(void 0, void 0, void 0, function* () {
     var _a;
-    console.log("getSEO", url);
     let result = [];
     let title, description, keywords, content, metrics, loadTime, inGoogleSearch;
     let tagsCount = {
@@ -132,7 +131,6 @@ const getSEO = (url) => __awaiter(void 0, void 0, void 0, function* () {
         });
     }
     if (title) {
-        console.log("getSEO return", 1);
         return {
             status: 1,
             data: result,
@@ -144,7 +142,6 @@ const getSEO = (url) => __awaiter(void 0, void 0, void 0, function* () {
         };
     }
     else {
-        console.log("getSEO return", 3);
         return {
             status: 3,
             data: [

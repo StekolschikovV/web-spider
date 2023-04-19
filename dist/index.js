@@ -35,16 +35,19 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const express_1 = __importDefault(require("express"));
 const child_process_1 = require("child_process");
-const path_1 = __importDefault(require("path"));
+const express_1 = __importDefault(require("express"));
 const fs = __importStar(require("fs"));
+const path_1 = __importDefault(require("path"));
 const SEO_1 = require("./SEO");
-const tor_1 = __importDefault(require("./tor"));
 const previewer_1 = require("./previewer");
+const tor_1 = __importDefault(require("./tor"));
+const queue = require('express-queue');
+// Using queue middleware
 const urlParser = require('url');
 const app = (0, express_1.default)();
 const port = process.env.PORT || 1340;
+app.use(queue({ activeLimit: 1, queuedLimit: -1 }));
 app.get('/healthcheck', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     let torResponse, seoResponse;
     try {

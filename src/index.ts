@@ -1,15 +1,17 @@
-import express, { Express, Request, Response } from 'express';
 import { execSync } from 'child_process';
-import { url } from 'inspector';
-import path from 'path';
+import express, { Express, Request, Response } from 'express';
 import * as fs from "fs";
+import path from 'path';
 import { getSEO } from "./SEO";
+import { addLoader, errorHtml, fixUtl, getTopPreviewer, urlToFileName } from './previewer';
 import tor from './tor';
-import { urlToFileName, fixUtl, addLoader, errorHtml, getTopPreviewer } from './previewer';
+const queue = require('express-queue');
 
+// Using queue middleware
 const urlParser = require('url')
 const app: Express = express();
 const port = process.env.PORT || 1340;
+app.use(queue({ activeLimit: 1, queuedLimit: -1 }));
 
 app.get('/healthcheck', async (req: Request, res: Response) => {
 
@@ -106,7 +108,6 @@ app.get('/tor', async (req: Request, res: Response) => {
 })
 
 app.get('/seo', async (req: Request, res: Response) => {
-
     const { url } = urlParser.parse(req.url, true).query
 
     if (url) {
